@@ -1,25 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import Header from './components/Header';
+import NotesList from './components/NotesList';
+import Search from './components/Search';
 
-function App() {
+const App = () => {
+  const [searchText, setSearchText] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
+  const [notes, setNotes] = useState([
+    {
+      text: 'some random text',
+      date: '15/04/2022',
+      id: crypto.randomUUID(),
+    },
+    {
+      text: 'some random text sdfdfserfgser',
+      date: '15/06/2022',
+      id: crypto.randomUUID(),
+    },
+    {
+      text: 'some random text oersgnjijresg',
+      date: '15/04/2022',
+      id: crypto.randomUUID(),
+    },
+  ]);
+
+  const deleteNote = (id) => {
+    const newNotes = notes.filter((note) => note.id !== id);
+    setNotes(newNotes);
+  };
+
+  const addNote = (text) => {
+    const date = new Date();
+    const newNote = {
+      text,
+      date: date.toLocaleDateString(),
+      id: crypto.randomUUID,
+    };
+
+    const newNotes = [...notes, newNote];
+    setNotes(newNotes);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={`${darkMode && 'dark-mode'} main`}>
+      <div className="container">
+        <Header handleDarkMode={setDarkMode} />
+        <Search handleSearchNote={setSearchText} />
+        <NotesList
+          notes={notes.filter((note) =>
+            note.text.toLowerCase().includes(searchText)
+          )}
+          handleAddNote={addNote}
+          handleDeleteNote={deleteNote}
+        />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
